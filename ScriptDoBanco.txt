@@ -1,0 +1,67 @@
+CREATE TABLE account (
+    id SERIAL NOT NULL,
+    email VARCHAR(256) NOT NULL,
+    nome VARCHAR(256) NOT NULL,
+    password VARCHAR(256) NOT NULL,
+    
+    CONSTRAINT PK_AccountId PRIMARY KEY (id)
+);
+
+CREATE TABLE producer (
+    id SERIAL NOT NULL,
+    CNPJ VARCHAR(18) NOT NULL,
+    
+    CONSTRAINT PK_ProducerId PRIMARY KEY (id),
+    CONSTRAINT FK_ProducerId FOREIGN KEY (id) REFERENCES account(id)
+  
+);
+
+CREATE TABLE client (
+    id SERIAL NOT NULL,
+    CPF VARCHAR(14) NOT NULL,
+    
+    CONSTRAINT PK_ClientId PRIMARY KEY (id),
+    CONSTRAINT FK_ClientId FOREIGN KEY (id) REFERENCES account(id)
+    
+);
+
+CREATE TABLE showcategory (
+    name VARCHAR(96) NOT NULL,
+    
+    CONSTRAINT PK_ShowCategoryName PRIMARY KEY (name)
+    
+);
+
+CREATE TABLE show (
+    id SERIAL NOT NULL,
+    name VARCHAR(256) NOT NULL,
+    showdate DATE NOT NULL,
+    value DECIMAL(24, 2) NOT NULL,
+    category VARCHAR(96) NOT NULL,
+    imageurl text,
+    buyurl text,
+    description text NOT NULL,
+    location text NOT NULL,
+    
+    CONSTRAINT PK_ShowId PRIMARY KEY (id),
+    CONSTRAINT FK_ShowCategory FOREIGN KEY (category) REFERENCES showcategory(name)
+
+);
+
+CREATE TABLE buyshow (
+    accountid SERIAL NOT NULL,
+    showid SERIAL NOT NULL,
+    buydate DATE NOT NULL,
+    CONSTRAINT FK_BuyShowUserId FOREIGN KEY (accountid) REFERENCES account(id),
+    CONSTRAINT FK_BuyShowShowId FOREIGN KEY (showid) REFERENCES show(id)
+
+);
+
+
+
+ACCOUNT = TODAS AS CONTAS DE USUÁRIOS
+PRODUCER = CONTAS DOS PRODUTORES (VÂO HERDAR O ID DA ACCOUNT)
+CLIENT = CONTAS DOS CLIENTES (VÂO HERDAR O ID DA ACCOUNT)
+SHOWCATEGORY = TODAS AS CATEGORIAS DE EVENTOS
+SHOW = INFORMAÇÕES DE TODOS OS EVENTOS CADASTRADOS
+BUYSHOW = TODAS AS COMPRAS DE INGRESSOS FEITAS (ARMAZENA O ID DO SHOW, E DA ACCOUNT)
