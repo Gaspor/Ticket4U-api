@@ -1,0 +1,69 @@
+const { query } = require("./src/config/connection");
+
+const userLogin = query(`
+CREATE TABLE account (
+    id SERIAL,
+    name VARCHAR(256) NOT NULL,
+    email VARCHAR(256) NOT NULL UNIQUE,
+    password VARCHAR(256) NOT NULL,
+    createdat TIMESTAMP DEFAULT NOW() NOT NULL,
+    updatedat TIMESTAMP DEFAULT NOW() NOT NULL,
+    CONSTRAINT PK_accountId PRIMARY KEY(id)
+
+);
+
+CREATE TABLE producer (
+    id int NOT NULL,
+    CNPJ CHAR(18) NOT NULL UNIQUE,
+    CONSTRAINT PK_ProducerId PRIMARY KEY(id),
+    CONSTRAINT FK_ProducerId FOREIGN KEY(id) REFERENCES account(id)
+    
+);
+
+CREATE TABLE client (
+    id int NOT NULL,
+    CPF CHAR(14) NOT NULL UNIQUE,
+    CONSTRAINT PK_ClientId PRIMARY KEY(id),
+    CONSTRAINT FK_ClientId FOREIGN KEY(id) REFERENCES account(id)
+    
+);
+
+CREATE TABLE show (
+    id SERIAL,
+    producerId INT NOT NULL,
+    name VARCHAR(256) NOT NULL,
+    show_date TIMESTAMP NOT NULL,
+    show_hour CHAR(5) NOT NULL,
+    image_url TEXT NOT NULL,
+    show_url TEXT NOT NULL,
+    description TEXT NOT NULL,
+    location VARCHAR(256) NOT NULL,
+    tickets INT DEFAULT 0 NOT NULL,
+    clicks INT DEFAULT 0 NOT NULL,
+    createdat TIMESTAMP DEFAULT NOW() NOT NULL,
+    updatedat TIMESTAMP DEFAULT NOW() NOT NULL,
+    CONSTRAINT PK_ShowId PRIMARY KEY(id),
+    CONSTRAINT FK_Show_ProducerId FOREIGN KEY(producerId) REFERENCES producer(id)
+
+);
+
+CREATE TABLE category (
+    id SERIAL,
+    name VARCHAR(256) NOT NULL,
+    createdat TIMESTAMP DEFAULT NOW() NOT NULL,
+    updatedat TIMESTAMP DEFAULT NOW() NOT NULL,
+    CONSTRAINT PK_CategoryId PRIMARY KEY(id)
+
+);
+
+CREATE TABLE show_category (
+    id_show int NOT NULL,
+    id_category int NOT NULL,
+    CONSTRAINT PK_Show_Category_ShowCategory PRIMARY KEY(id_show, id_category),
+    CONSTRAINT FK_Show_Category_ShowId FOREIGN KEY(id_show) REFERENCES show(id),
+    CONSTRAINT FK_Show_Category_CategoryId FOREIGN KEY(id_category) REFERENCES category(id)
+
+);
+
+
+`);
